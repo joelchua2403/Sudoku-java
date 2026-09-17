@@ -28,11 +28,7 @@ public class SudokuBoard {
     }
 
 public void set(Position position, int value) {
-    if (isFixed(position)) {
-        throw new IllegalStateException(
-                position + " is pre-filled"
-        );
-    }
+    requireEditable(position);
 
     if (value < 1 || value > 9) {
         throw new IllegalArgumentException(
@@ -41,6 +37,53 @@ public void set(Position position, int value) {
     }
 
     cells[position.row()][position.column()] = value;
+}
+
+public void clear(Position position) {
+   requireEditable(position);
+    cells[position.row()][position.column()] = 0;
+}
+
+public String display() {
+    StringBuilder output = new StringBuilder();
+
+    output.append("    1 2 3 4 5 6 7 8 9");
+    output.append('\n');
+
+    for (int row = 0; row < SIZE; row++) {
+        output.append("  ");
+        output.append((char) ('A' + row));
+
+        for (int column = 0; column < SIZE; column++) {
+            output.append(' ');
+
+            int value = cells[row][column];
+
+            if (value == 0) {
+                output.append('_');
+            } else {
+                output.append(value);
+            }
+        }
+
+        if (row < SIZE - 1) {
+            output.append('\n');
+        }
+    }
+
+    return output.toString();
+}
+
+public boolean isFull() {
+    for (int row = 0; row < SIZE; row++) {
+        for (int column = 0; column < SIZE; column++) {
+            if (cells[row][column] == 0) {
+                return false;
+            }
+        }
+    }
+
+    return true;
 }
 
     private static int[][] copy(int[][] source) {
@@ -54,6 +97,10 @@ public void set(Position position, int value) {
 
         return result;
     }
+
+    public int[][] snapshot() {
+    return copy(cells);
+}
 
     private static void requireValidPuzzle(int[][] puzzle) {
     if (puzzle == null || puzzle.length != SIZE) {
@@ -75,6 +122,14 @@ public void set(Position position, int value) {
             );
         }
     }
+    }
+}
+
+private void requireEditable(Position position) {
+    if (isFixed(position)) {
+        throw new IllegalStateException(
+                position + " is pre-filled"
+        );
     }
 }
 }
