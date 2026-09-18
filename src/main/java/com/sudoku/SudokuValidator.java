@@ -86,4 +86,8 @@ public class SudokuValidator {
             }
         }
     }
+
+    public boolean isSolved(SudokuBoard board) {
+    return board.isFull() && validate(board).isEmpty();
+}
 }
