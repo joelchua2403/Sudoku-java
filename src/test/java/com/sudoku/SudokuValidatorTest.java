@@ -1,0 +1,34 @@
+package com.sudoku;
+
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class SudokuValidatorTest {
+
+    private final SudokuValidator validator = new SudokuValidator();
+
+    @Test
+    void detectsDuplicateNumberInRow() {
+        int[][] puzzle = new int[9][9];
+        puzzle[0][0] = 3;
+        puzzle[0][4] = 3;
+
+        SudokuBoard board = new SudokuBoard(puzzle);
+
+        List<Violation> violations = validator.validate(board);
+
+        assertEquals(
+                List.of(
+                        new Violation(
+                                Violation.Type.ROW,
+                                3,
+                                0
+                        )
+                ),
+                violations
+        );
+    }
+}
